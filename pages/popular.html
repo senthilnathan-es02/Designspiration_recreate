@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Popular page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/style/enter-page.css">
+    <link rel="icon" href="https://pbs.twimg.com/profile_images/1246161854373584896/pF9PQcRA_400x400.jpg">
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="navbar">
+            <h3>Designspiration</h3>
+
+            <div class="search-box">
+                <input type="search" placeholder="Search" autocomplete="off">
+                <i class="fa-solid fa-palette"></i>
+            </div>
+
+            <a href="/pages/Topics.html">Explore</a>
+            <a href="#">Get Pro</a>
+
+            <button class="icon-bar">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+
+            <button class="icon-bar">
+                <i class="fa-solid fa-ellipsis"></i>
+            </button>
+
+            <a class="profile-icon" href="#"><i class="fa-solid fa-circle-user"></i></a>
+        </div>
+
+        <div class="header-pages">
+            <a href="/pages/enter-page.html" class="tab">Home</a>
+            <a href="/pages/following.html" class="tab">Following</a>
+            <a href="/pages/popular.html" class="tab">Popular</a>
+            <a href="/pages/Everything.html" class="tab">Everything</a>
+            <a href="/pages/Topics.html" class="tab">Topics</a>
+        </div>
+
+        <div id="enter-imageContainer"></div> <!-- To Show Uploaded Images -->
+    </div>
+
+    <script>
+
+// Function to Display All Images
+function displayImages() {
+    const savedImages = JSON.parse(localStorage.getItem("uploadedImages")) || [];
+    const imageContainer = document.getElementById("enter-imageContainer");
+    imageContainer.innerHTML = "";
+
+    if (savedImages.length === 0) {
+        imageContainer.innerHTML = "<p>No images available.</p>";
+        return;
+    }
+
+    // Shuffle images randomly (optional, remove this line if order matters)
+    let shuffledImages = savedImages.sort(() => Math.random() - 0.5);
+
+    // Display all images (no limit)
+    shuffledImages.forEach((data, index) => {
+        let wrapper = document.createElement("div");
+        wrapper.className = "image-wrapper";
+
+        let imgElement = document.createElement("img");
+        imgElement.src = data.url;
+        imgElement.alt = "Uploaded Image";
+
+        let descElement = document.createElement("p");
+        descElement.innerText = data.description;
+
+        // 🔥 Create Delete Button
+        let deleteButton = document.createElement("button");
+        deleteButton.innerText = "x";
+        deleteButton.className = "delete-btn";
+
+        // 🔥 Delete Functionality
+        deleteButton.onclick = function () {
+            savedImages.splice(index, 1);
+            localStorage.setItem("uploadedImages", JSON.stringify(savedImages));
+            displayImages(); // Refresh images after deleting
+        };
+
+        wrapper.appendChild(deleteButton);
+        wrapper.appendChild(imgElement);
+        wrapper.appendChild(descElement);
+        imageContainer.appendChild(wrapper);
+    });
+}
+
+// Load images on page load
+window.onload = function () {
+    displayImages();
+};
+
+// 🔄 Refresh Images when clicking the button
+document.getElementById("refresh-btn").addEventListener("click", function () {
+    displayImages(); // Reloads new images
+});
+
+// Underline the clicked link
+document.querySelectorAll(".header-pages a").forEach(link => {
+    link.addEventListener("click", function (event) {
+        event.preventDefault(); // Prevent default link behavior
+
+        // Remove 'active' class from all links
+        document.querySelectorAll(".header-pages a").forEach(el => el.classList.remove("active"));
+
+        // Add 'active' class to the clicked link
+        this.classList.add("active");
+    });
+});
+
+    </script>
+
+</body>
+
+</html>

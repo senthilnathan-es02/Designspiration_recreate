@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./style/index.css">
+    <link rel="icon" href="https://pbs.twimg.com/profile_images/1246161854373584896/pF9PQcRA_400x400.jpg">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="navbar">
+            <h3 class="logo">Designspiration</h3>
+        
+            <div class="search-box">
+                <input type="search" placeholder="Search" autocomplete="off">
+                <i class="fa-solid fa-palette"></i>
+            </div>
+        
+            <nav class="nav-links">
+                <a href="#">Explore</a>
+                <a href="#">Get Pro</a>
+            </nav>
+        
+            <div class="auth-buttons">
+                <button id="login-btn" class="login">Login</button>
+                <button id="signup-btn" class="signup">Sign Up</button>
+            </div>
+        
+            <button class="icon-bar" aria-label="More options">
+                <i class="fa-solid fa-ellipsis"></i>
+            </button>
+        </div>
+        
+        
+        <div class="contact-page">
+            <div class="content">
+                <h3>Save & explore<br> ideas that inspire<br> your creativity.</h3>
+                <p>Save creative inspiration, colors, links, notes, <br> screenshots with our new Browser Extension.
+                </p>
+                <button class="signup-button-bottom">Sign Up</button>
+            </div>
+
+            <div class="contact-img">
+                <img src="/assests/image/enter-img.png" alt="Welcome Image" width="370px">
+            </div>
+        </div>
+
+
+
+
+        <div class="palette-container">
+            <div class="arrow"><i class="fa-solid fa-angle-left"></i></div> <!-- Left Arrow -->
+            <div class="color-palette">
+
+
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+                <div class="color"></div>
+            </div>
+
+            <div class="arrow"><i class="fa-solid fa-angle-right"></i></div> <!-- Right Arrow -->
+        </div>
+
+
+        <div id="imageContainer"></div> <!-- To Show Uploaded Images -->
+
+
+
+        <div class="signup-content">
+            <h1>Signup to <br> explore more </h1>
+            <button id="continue" class="last-side-signup-button">Continue</button>
+        </div>
+
+    </div>
+
+
+
+
+
+    <script>
+// Function to display images with a limit of 20
+function displayImages() {
+    const savedImages = JSON.parse(localStorage.getItem("uploadedImages")) || [];
+    const imageContainer = document.getElementById("imageContainer");
+    imageContainer.innerHTML = "";
+
+    // Ensure container has flex wrap
+    imageContainer.style = "display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;";
+
+    // Shuffle images randomly
+    let shuffledImages = savedImages.sort(() => Math.random() - 0.5);
+
+    // Display only first 20 images
+    let imagesToShow = shuffledImages.slice(0, 29);
+
+    imagesToShow.forEach((data, index) => {
+        let wrapper = document.createElement("div");
+        wrapper.style = "display: flex; flex-direction: column; align-items: center; max-width: 320px; position: relative;";
+
+        let imgElement = document.createElement("img");
+        imgElement.src = data.url;
+        imgElement.style = "width: 200px; height: 300px; object-fit: cover; border-radius: 5px; display: block;";
+
+
+        let descElement = document.createElement("p");
+        descElement.innerText = data.description;
+        descElement.style = "text-align: center; font-size: 14px; color: gray;";
+
+        // Create Delete Button
+        let deleteButton = document.createElement("button");
+        deleteButton.innerText = "x";
+        deleteButton.style = "display:none; position: absolute; top: 5px; right: 5px; background: gray; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;";
+        
+        // Delete Functionality
+        deleteButton.onclick = function () {
+            savedImages.splice(index, 1); // Remove the image from array
+            localStorage.setItem("uploadedImages", JSON.stringify(savedImages)); // Update localStorage
+            displayImages(); // Refresh the page
+        };
+
+        wrapper.appendChild(deleteButton); // Add delete button
+        wrapper.appendChild(imgElement);
+        wrapper.appendChild(descElement);
+        imageContainer.appendChild(wrapper);
+    });
+}
+
+// Load images from localStorage on page load
+window.onload = function () {
+    displayImages();
+};
+
+// Refresh Images when clicking the button
+const refreshButton = document.getElementById("refresh-btn");
+if (refreshButton) {
+    refreshButton.addEventListener("click", function () {
+        displayImages();
+    });
+}
+// Function to navigate to another page
+function navigateToPage(page) {
+    window.location.href = `./pages/${page}.html`; // Ensure the path is correct
+}
+
+// Event Listener for Login Button
+const loginButton = document.getElementById("login-btn");
+if (loginButton) {
+    loginButton.addEventListener("click", function () {
+        navigateToPage("enter-page");
+    });
+}
+
+// Event Listener for Signup Button
+const signupButton = document.getElementById("signup-btn");
+if (signupButton) {
+    signupButton.addEventListener("click", function () {
+        navigateToPage("enter-page");
+    });
+}
+
+// Event Listener for Continue Button
+const continueButton = document.getElementById("continue");
+if (continueButton) {
+    continueButton.addEventListener("click", function () {
+        navigateToPage("enter-page"); // Change "dashboard" to your actual next page
+    });
+}
+
+    </script>
+    
+
+</body>
+
+</html>

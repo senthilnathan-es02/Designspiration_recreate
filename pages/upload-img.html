@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploading image page</title>
+    <link rel="icon" href="https://pbs.twimg.com/profile_images/1246161854373584896/pF9PQcRA_400x400.jpg">
+    <script src="/script/script.js" defer></script>
+</head>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #f4f4f4;
+        padding: 20px;
+        background-image: url(/assests/image/upload-img-page-bg.jpg);
+        background-repeat: no-repeat;
+        background-size: 130%;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 400px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .header h4 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        color: #333;
+    }
+
+    .header p {
+        margin-bottom: 5%;
+        font-size: smaller;
+        color: gray;
+    }
+
+    .form-container {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    form input,
+    form textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-top: 5%;
+    }
+
+    form textarea {
+        height: 110px;
+    }
+
+    form input:focus,
+    form textarea:focus {
+        border-color: #555;
+        outline: none;
+    }
+
+    form input[type="file"] {
+        padding: 10px;
+        border: none;
+        background: #e6e6e6;
+        cursor: pointer;
+    }
+
+    .submit-button {
+        width: 100%;
+        margin-top: 15px;
+        padding: 12px;
+        background: black;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-bottom: 5%;
+    }
+
+    .submit-button:hover {
+        background: rgb(52, 50, 50);
+    }
+
+    .footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #777;
+    }
+
+    .home-page-link {
+        color: rebeccapurple;
+    }
+
+    .home-page-link:hover {
+        color: black;
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h4>Designspiration</h4>
+            <p>Uploading image page</p>
+        </div>
+
+        <div class="form-container">
+            <form>
+                <input type="file" id="fileInput" accept="image/*">
+                <textarea id="imageDescription" placeholder="Description of the Image" autocomplete="off"></textarea>
+            </form>
+
+            <h3>Uploaded Image:</h3>
+            <img id="uploadedImage" src="" alt="Uploaded Image" style="max-width: 300px; display: none;">
+        </div>
+
+        <button class="submit-button" onclick="handleUpload()">Upload Image</button>
+        <a href="/index.html" class="home-page-link">Go to Home page</a>
+
+        <div class="footer">
+            <footer>
+                <p>&copy; 2025 All rights reserved. Owner Senthilnathan.</p>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const cloudinaryUrl = "https://api.cloudinary.com/v1_1/difxpdbat/image/upload"; 
+        const uploadPreset = "designspiration_images"; 
+
+        async function uploadImageToCloudinary(imageFile) {
+            const formData = new FormData();
+            formData.append("file", imageFile);
+            formData.append("upload_preset", uploadPreset);
+
+            try {
+                const cloudinaryResponse = await fetch(cloudinaryUrl, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!cloudinaryResponse.ok) {
+                    throw new Error("Failed to upload image to Cloudinary");
+                }
+
+                const cloudinaryData = await cloudinaryResponse.json();
+                return cloudinaryData.secure_url; 
+            } catch (error) {
+                console.error("Error uploading image to Cloudinary: ", error);
+                alert("Error uploading image. Please try again.");
+                return null;
+            }
+        }
+
+        async function handleUpload() {
+            const fileInput = document.querySelector("#fileInput");
+            const imageDescription = document.querySelector("#imageDescription").value;
+            const imageFile = fileInput.files[0];
+
+            if (!imageFile) {
+                alert("Please select an image to upload.");
+                return;
+            }
+
+            const imageUrl = await uploadImageToCloudinary(imageFile);
+            if (imageUrl) {
+                console.log("Uploaded Image URL:", imageUrl);
+                console.log("Image Description:", imageDescription);
+
+                document.getElementById("uploadedImage").src = imageUrl;
+                document.getElementById("uploadedImage").style.display = "block";
+
+                // Store Image & Description in localStorage
+                let savedImages = JSON.parse(localStorage.getItem("uploadedImages")) || [];
+                savedImages.push({ url: imageUrl, description: imageDescription });
+                localStorage.setItem("uploadedImages", JSON.stringify(savedImages));
+
+                alert("✅ Image uploaded successfully!");
+            }
+        }
+    </script>
+</body>
+</html>

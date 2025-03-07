@@ -103,8 +103,8 @@
 
 
 
-    <script>
-// Function to display images with a limit of 20
+<script>
+    // Function to display images with a limit of 20
 function displayImages() {
     const savedImages = JSON.parse(localStorage.getItem("uploadedImages")) || [];
     const imageContainer = document.getElementById("imageContainer");
@@ -114,10 +114,10 @@ function displayImages() {
     imageContainer.style = "display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;";
 
     // Shuffle images randomly
-    let shuffledImages = savedImages.sort(() => Math.random() - 0.5);
+    let shuffledImages = [...savedImages].sort(() => Math.random() - 0.5);
 
     // Display only first 20 images
-    let imagesToShow = shuffledImages.slice(0, 29);
+    let imagesToShow = shuffledImages.slice(0, 20);
 
     imagesToShow.forEach((data, index) => {
         let wrapper = document.createElement("div");
@@ -127,20 +127,23 @@ function displayImages() {
         imgElement.src = data.url;
         imgElement.style = "width: 200px; height: 300px; object-fit: cover; border-radius: 5px; display: block;";
 
-
         let descElement = document.createElement("p");
-        descElement.innerText = data.description;
-        descElement.style = "text-align: center; font-size: 14px; color: gray;";
+        descElement.innerText = data.description || "No description";
+        descElement.style = " display:none;text-align: center; font-size: 14px; color: gray;";
 
         // Create Delete Button
         let deleteButton = document.createElement("button");
         deleteButton.innerText = "x";
-        deleteButton.style = "display:none; position: absolute; top: 5px; right: 5px; background: gray; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px;";
-        
+        deleteButton.style = " display:none; position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; ";
+
+        // Show delete button on hover
+        wrapper.onmouseover = () => { deleteButton.style.display = "block"; };
+        wrapper.onmouseout = () => { deleteButton.style.display = "none"; };
+
         // Delete Functionality
         deleteButton.onclick = function () {
-            savedImages.splice(index, 1); // Remove the image from array
-            localStorage.setItem("uploadedImages", JSON.stringify(savedImages)); // Update localStorage
+            const updatedImages = savedImages.filter((_, imgIndex) => imgIndex !== index); // Remove the image
+            localStorage.setItem("uploadedImages", JSON.stringify(updatedImages)); // Update localStorage
             displayImages(); // Refresh the page
         };
 
@@ -163,6 +166,7 @@ if (refreshButton) {
         displayImages();
     });
 }
+
 // Function to navigate to another page
 function navigateToPage(page) {
     window.location.href = `./pages/${page}.html`; // Ensure the path is correct
@@ -192,7 +196,7 @@ if (continueButton) {
     });
 }
 
-    </script>
+</script>
     
 
 </body>
